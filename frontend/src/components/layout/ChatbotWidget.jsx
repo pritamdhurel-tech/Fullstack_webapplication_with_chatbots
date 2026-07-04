@@ -4,6 +4,7 @@
 // FR8 — fallback message for out-of-scope queries (enforced by backend system prompt)
 
 import { useState, useRef, useEffect } from "react";
+import { buildApiUrl } from "../../hooks/useFetch";
 
 const FALLBACK =
   "I'm sorry, I'm unable to answer that. Please use our Contact Us form or email us.";
@@ -35,7 +36,7 @@ export default function ChatbotWidget() {
     setLoading(true);
 
     try {
-      const res = await fetch("/api/chat", {
+      const res = await fetch(buildApiUrl("/api/chat"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

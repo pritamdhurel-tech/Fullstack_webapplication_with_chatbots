@@ -1,8 +1,20 @@
 import { useState, useEffect } from "react";
 
-const API_URL =
-  import.meta.env.VITE_API_URL ||
-  "https://fullstack-webapplication-with-chatbots.onrender.com";
+export function buildApiUrl(path = "") {
+  const base = (
+    import.meta.env.VITE_API_URL ||
+    "https://fullstack-webapplication-with-chatbots.onrender.com"
+  ).replace(/\/+$/, "");
+  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+
+  if (!base) return normalizedPath;
+
+  if (base.endsWith("/api") && normalizedPath.startsWith("/api")) {
+    return `${base}${normalizedPath.slice(4)}`;
+  }
+
+  return `${base}${normalizedPath}`;
+}
 
 export default function useFetch(url) {
   const [data, setData] = useState([]);
@@ -17,7 +29,7 @@ export default function useFetch(url) {
     setLoading(true);
     setError(null);
 
-    fetch(`${API_URL}${url}`)
+    fetch(buildApiUrl(url))
       .then((res) => {
         if (!res.ok) throw new Error(`Server error: ${res.status}`);
         return res.json();

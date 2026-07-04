@@ -1,46 +1,49 @@
 // src/pages/admin/AdminDashboard.jsx
 // FR11 — shows total enquiry count and recent submissions
-import { useEffect, useState } from 'react'
-import { PageHeader, Alert } from '../../components/admin/AdminUI'
+import { useEffect, useState } from "react";
+import { buildApiUrl } from "../../hooks/useFetch";
+import { PageHeader, Alert } from "../../components/admin/AdminUI";
 
 function StatCard({ label, value, icon, color }) {
   return (
     <div className="glass-card p-6">
       <div className="flex items-center justify-between mb-3">
         <span className="text-2xl">{icon}</span>
-        <span className={`text-xs font-semibold px-2.5 py-1 rounded-full
-                          border ${color}`}>
+        <span
+          className={`text-xs font-semibold px-2.5 py-1 rounded-full
+                          border ${color}`}
+        >
           Live
         </span>
       </div>
-      <div className="font-display text-3xl font-bold mb-1">{value ?? '—'}</div>
+      <div className="font-display text-3xl font-bold mb-1">{value ?? "—"}</div>
       <div className="text-sm text-[#8A8FA8]">{label}</div>
     </div>
-  )
+  );
 }
 
 export default function AdminDashboard() {
-  const [stats, setStats]   = useState(null)
-  const [recent, setRecent] = useState([])
-  const [error, setError]   = useState('')
-  const token = localStorage.getItem('admin_token')
+  const [stats, setStats] = useState(null);
+  const [recent, setRecent] = useState([]);
+  const [error, setError] = useState("");
+  const token = localStorage.getItem("admin_token");
 
   useEffect(() => {
     async function load() {
       try {
-        const res  = await fetch('/api/enquiries', {
+        const res = await fetch(buildApiUrl("/api/enquiries"), {
           headers: { Authorization: `Bearer ${token}` },
-        })
-        const data = await res.json()
-        if (!res.ok) throw new Error(data.error)
-        setStats(data.total)
-        setRecent(data.data.slice(0, 5))
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error);
+        setStats(data.total);
+        setRecent(data.data.slice(0, 5));
       } catch (err) {
-        setError('Could not load dashboard data.')
+        setError("Could not load dashboard data.");
       }
     }
-    load()
-  }, [token])
+    load();
+  }, [token]);
 
   return (
     <div>
@@ -82,10 +85,12 @@ export default function AdminDashboard() {
           <p className="text-sm text-[#4A4F66]">No enquiries yet.</p>
         ) : (
           <div className="flex flex-col gap-3">
-            {recent.map(e => (
-              <div key={e.id}
+            {recent.map((e) => (
+              <div
+                key={e.id}
                 className="glass-card px-5 py-4 flex items-center
-                           justify-between gap-4">
+                           justify-between gap-4"
+              >
                 <div className="min-w-0">
                   <p className="text-sm font-medium truncate">{e.full_name}</p>
                   <p className="text-xs text-[#8A8FA8] truncate">
@@ -94,7 +99,7 @@ export default function AdminDashboard() {
                 </div>
                 <div className="text-right flex-shrink-0">
                   <p className="text-xs text-[#4A4F66]">
-                    {new Date(e.submitted_at).toLocaleDateString('en-GB')}
+                    {new Date(e.submitted_at).toLocaleDateString("en-GB")}
                   </p>
                   <p className="text-xs text-[#8A8FA8] truncate max-w-[120px]">
                     {e.email}
@@ -106,5 +111,5 @@ export default function AdminDashboard() {
         )}
       </div>
     </div>
-  )
+  );
 }

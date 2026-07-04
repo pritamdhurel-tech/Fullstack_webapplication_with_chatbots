@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import { buildApiUrl } from "../hooks/useFetch";
 
 // FR5 — all 7 required fields: name, email, phone, company, country, job title, job details
 // FR6 — on success, API sends confirmation email to both customer and admin
@@ -91,7 +92,7 @@ export default function Contact() {
 
     setStatus("loading");
     try {
-      const res = await fetch("/api/contact", {
+      const res = await fetch(buildApiUrl("/api/contact"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),

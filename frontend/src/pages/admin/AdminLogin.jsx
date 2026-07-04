@@ -2,6 +2,7 @@
 // FR9 — admin login with CAPTCHA + JWT
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { buildApiUrl } from "../../hooks/useFetch";
 import { showToast } from "../../utils/toast";
 
 // reCAPTCHA v2 site key — replace with your own from console.google.com/recaptcha
@@ -47,7 +48,7 @@ export default function AdminLogin() {
     setError("");
 
     try {
-      const res = await fetch("/api/auth/login", {
+      const res = await fetch(buildApiUrl("/api/auth/login"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...form, captchaToken }),
