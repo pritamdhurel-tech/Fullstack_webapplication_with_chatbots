@@ -1,11 +1,17 @@
 import { useState, useEffect } from "react";
 
 export function buildApiUrl(path = "") {
+  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+  const configuredBase = import.meta.env.VITE_API_URL?.trim();
+
+  if (import.meta.env.DEV && !configuredBase) {
+    return normalizedPath;
+  }
+
   const base = (
-    import.meta.env.VITE_API_URL ||
+    configuredBase ||
     "https://fullstack-webapplication-with-chatbots.onrender.com"
   ).replace(/\/+$/, "");
-  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
 
   if (!base) return normalizedPath;
 

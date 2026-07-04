@@ -20,11 +20,21 @@ const app = express();
 const PORT = process.env.PORT ?? 5000;
 
 // ── Middleware ────────────────────────────────────────────────────
+const allowedOrigins = [
+  "https://fullstack-webapplication-with-chatb.vercel.app",
+  "http://localhost:5173",
+  "http://127.0.0.1:5173",
+];
+
 app.use(
   cors({
-    origin:
-      process.env.CLIENT_URL ??
-      "https://fullstack-webapplication-with-chatb.vercel.app",
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   }),
 );
