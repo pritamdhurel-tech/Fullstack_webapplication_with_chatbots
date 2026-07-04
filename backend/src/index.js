@@ -22,7 +22,9 @@ const PORT = process.env.PORT ?? 5000;
 // ── Middleware ────────────────────────────────────────────────────
 app.use(
   cors({
-    origin: process.env.CLIENT_URL ?? "http://localhost:5173",
+    origin:
+      process.env.CLIENT_URL ??
+      "https://fullstack-webapplication-with-chatb.vercel.app",
     credentials: true,
   }),
 );
