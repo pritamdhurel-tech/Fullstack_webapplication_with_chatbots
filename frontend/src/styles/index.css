@@ -1,0 +1,99 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-[#080B12] text-[#F0F0F5] font-body;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+  }
+}
+
+@layer components {
+  /* Glass card */
+  .glass-card {
+    @apply bg-white/[0.04] border border-white/10 rounded-[14px] backdrop-blur-[16px]
+           transition-all duration-300;
+  }
+  .glass-card:hover {
+    @apply bg-white/[0.07] border-white/[0.18] -translate-y-1;
+  }
+
+  /* Skeleton shimmer */
+  .skeleton {
+    background: linear-gradient(
+      90deg,
+      #111827 25%,
+      rgba(255, 255, 255, 0.06) 50%,
+      #111827 75%
+    );
+    background-size: 800px 100%;
+    animation: shimmer 1.6s infinite;
+    @apply rounded-lg;
+  }
+
+  /* Section label */
+  .section-label {
+    @apply text-[11px] font-semibold tracking-[2px] uppercase text-accent mb-3;
+  }
+
+  /* Section heading */
+  .section-title {
+    @apply font-display text-4xl md:text-5xl font-bold leading-[1.1] tracking-tight text-[#F0F0F5] mb-4;
+  }
+
+  /* Primary button */
+  .btn-primary {
+    @apply bg-accent text-white font-semibold px-8 py-3 rounded-lg
+           transition-all duration-200 hover:-translate-y-0.5
+           hover:shadow-[0_12px_32px_rgba(108,99,255,0.4)] cursor-pointer border-0;
+  }
+
+  /* Ghost button */
+  .btn-ghost {
+    @apply bg-transparent text-[#F0F0F5] border border-white/10 font-medium px-8 py-3
+           rounded-lg transition-all duration-200 hover:bg-white/[0.07]
+           hover:border-white/20 cursor-pointer;
+  }
+
+  /* Form input */
+  .form-input {
+    @apply w-full bg-white/[0.04] border border-white/10 rounded-lg px-4 py-3
+           text-[#F0F0F5] text-sm outline-none transition-all duration-200
+           focus:border-accent focus:bg-white/[0.07] placeholder-[#4A4F66];
+  }
+
+  /* Nav link */
+  .nav-link {
+    @apply text-[#8A8FA8] text-sm transition-colors duration-200 hover:text-[#F0F0F5]
+           no-underline;
+  }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position:  400px 0; }
+}
+
+@keyframes pulse2 {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.3; }
+}
+
+/* Particle canvas */
+#particle-canvas {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.5;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #080B12; }
+::-webkit-scrollbar-thumb { background: #1f2433; border-radius: 3px; }

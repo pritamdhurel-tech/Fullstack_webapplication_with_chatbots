@@ -1,0 +1,152 @@
+// prisma/schema.prisma
+// AI-Solutions — full database schema
+// Matches the ER diagram including Tutorial 3 client change: gallery_image.event_id → event.id
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─────────────────────────────────────────
+// ADMIN
+// Single admin account (FR9)
+// Password stored as bcrypt hash — never plain text
+// ─────────────────────────────────────────
+model Admin {
+  id         Int      @id @default(autoincrement())
+  username   String   @unique
+  password   String   // bcrypt hash
+  email      String   @unique
+  created_at DateTime @default(now())
+
+  @@map("admin")
+}
+
+// ─────────────────────────────────────────
+// ENQUIRY
+// Submitted via Contact Us form (FR5, FR6)
+// No FK to admin — admin views via dashboard (FR11)
+// ─────────────────────────────────────────
+model Enquiry {
+  id           Int      @id @default(autoincrement())
+  full_name    String
+  email        String
+  phone        String
+  company_name String
+  country      String
+  job_title    String
+  job_details  String
+  submitted_at DateTime @default(now())
+
+  @@map("enquiry")
+}
+
+// ─────────────────────────────────────────
+// SOLUTION
+// Managed by admin (FR10)
+// ─────────────────────────────────────────
+model Solution {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  icon        String?  // emoji or icon identifier
+  tag         String?  // e.g. "Enterprise", "Fast-track"
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  @@map("solution")
+}
+
+// ─────────────────────────────────────────
+// PAST WORK
+// Case studies — managed by admin (FR10)
+// metrics stored as JSON array: [{value, label}]
+// ─────────────────────────────────────────
+model PastWork {
+  id          Int      @id @default(autoincrement())
+  title       String
+  industry    String
+  description String
+  icon        String?  // emoji representing the industry
+  year        Int?
+  metrics     Json?    // [{ "value": "67%", "label": "Less downtime" }]
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  @@map("past_work")
+}
+
+// ─────────────────────────────────────────
+// CUSTOMER FEEDBACK
+// Created and managed by admin (FR2, FR10)
+// Visitors do NOT submit this directly
+// ─────────────────────────────────────────
+model CustomerFeedback {
+  id            Int      @id @default(autoincrement())
+  feedback_text String
+  rating        Int      // 1–5
+  customer_name String
+  company_name  String?
+  job_title     String?
+  is_approved   Boolean  @default(false)
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+
+  @@map("customer_feedback")
+}
+
+// ─────────────────────────────────────────
+// EVENT
+// Managed by admin (FR4, FR10)
+// Referenced by GalleryImage (FK added per Tutorial 3 client feedback)
+// ─────────────────────────────────────────
+model Event {
+  id           Int            @id @default(autoincrement())
+  name         String
+  date         DateTime
+  description  String
+  event_type   String?        // "In-person" | "Online" | "Hybrid"
+  created_at   DateTime       @default(now())
+  updated_at   DateTime       @updatedAt
+  gallery_images GalleryImage[]
+
+  @@map("event")
+}
+
+// ─────────────────────────────────────────
+// GALLERY IMAGE
+// Managed by admin (FR3, FR10)
+// event_id FK → event.id (nullable — not all images belong to an event)
+// Added per Tutorial 3 client feedback
+// ─────────────────────────────────────────
+model GalleryImage {
+  id         Int      @id @default(autoincrement())
+  image_url  String   // Cloudinary URL in production
+  caption    String?
+  event_id   Int?     // nullable FK → event.id
+  event      Event?   @relation(fields: [event_id], references: [id], onDelete: SetNull)
+  created_at DateTime @default(now())
+
+  @@map("gallery_image")
+}
+
+// ─────────────────────────────────────────
+// ARTICLE
+// Managed by admin (FR10)
+// ─────────────────────────────────────────
+model Article {
+  id             Int      @id @default(autoincrement())
+  title          String
+  excerpt        String
+  content        String?  // full body (optional for now)
+  category       String?
+  author         String?
+  published_date DateTime @default(now())
+  updated_at     DateTime @updatedAt
+
+  @@map("article")
+}
